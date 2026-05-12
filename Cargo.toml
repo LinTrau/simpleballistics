@@ -1,0 +1,10 @@
+[package]
+name = "simpleballistics"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+nalgebra = "*"
+serde = { version = "*", features = ["derive"] }
+toml = "*"
+csv = "*"

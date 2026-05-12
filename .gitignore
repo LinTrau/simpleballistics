@@ -1,0 +1,23 @@
+/target
+
+gitignore_content = """
+/target
+Cargo.lock
+
+# Nix
+result
+.direnv/
+
+# Output Data
+*.csv
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+"""
+t
