@@ -1,23 +1,18 @@
 /target
-
-gitignore_content = """
-/target
 Cargo.lock
 
-# Nix
+# Nix artifacts
 result
 .direnv/
+.nix-shell/
 
-# Output Data
+# Data & Logs
 *.csv
 *.log
+trajectory.csv
 
-# IDE
+# IDEs
 .vscode/
 .idea/
 *.swp
 
-# OS
-.DS_Store
-"""
-t

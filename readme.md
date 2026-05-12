@@ -1,90 +1,65 @@
-这是一个基于 Rust 实现的高性能动力学模拟引擎，专注于弹道计算、刚体及多体动力学模拟。项目采用 Nix 进行环境管理，并计划通过 FFI 或数据接口与 
-Julia (Makie) 协同工作，实现复杂任务的数值模拟与可视化。
+这是一个基于 Rust 实现的高性能动力学模拟引擎，专注于弹道计算、刚体及多体动力学模拟。项目通过 Nix 提供一致的开发环境，并计划与 Julia 
+(Makie) 协同进行高性能数值模拟与可视化。
 
-## 1. 项目介绍
+## 1. 项目介绍与部署
 
-当前版本已实现基础的**质点动力学 (Particle Dynamics)** 模拟，支持：
-- 考虑重力与空气阻力的三维空间运动模拟。
-- 基于 `nalgebra` 的高效向量运算。
-- 模拟数据的 CSV 序列化输出。
-- 基于 Nix 的高度可复现开发环境。
+### 开发环境依赖
+本项目推荐使用 **Nix** 进行环境管理。通过项目根目录下的 `flake.nix` 或 `shell.nix`，你可以一键获取 Rust 
+工具链、Julia 及其相关物理计算库（OpenBLAS 等）。
 
-## 2. 快速开始
-
-### 使用 Nix (推荐)
-如果你使用 NixOS 或已安装 Nix，可以直接进入隔离的开发环境：
-
-```bash
-# 进入开发环境 (包含 Rust 工具链, Julia, OpenBLAS 等)
-nix develop
-
-# 或者直接构建项目
-nix build
+#### 部署步骤
+1. **克隆仓库**：
+   ```bash
+   git clone 
+[https://github.com/LinTrau/simpleballistics.git](https://github.com/LinTrau/
+simpleballistics.git)
+   cd simpleballistics
 
 ```
 
-### 使用 Cargo
+2. **进入环境**：
+* 如果已启用 Flakes：`nix develop`
+* 如果使用传统 Nix：`nix-shell`
 
-确保已安装 Rust 工具链：
 
+3. **编译与运行**：
 ```bash
-# 运行模拟
 cargo run --release
 
-# 结果将保存至 trajectory.csv
-
 ```
 
-## 3. 开发路线图 (To-Do List)
+## 2. 任务路线图 (To-Do List)
 
-### 第一阶段：软件质量与健壮性 (P0 - 紧急)
+### 第一阶段：工程基础与可靠性 (P0 - 当前重点)
 
-* [x] **基础框架**：实现质点运动学步进与力学模型。
-* [ ] **错误处理**：将 `main.rs` 中的 `unwrap` 或简单 `Box<dyn Error>` 替换为 `thiserror` 或 
-`anyhow`，处理物理参数非法（如质量为负）的边界情况。
-* [ ] **单元测试**：
-* `physics.rs`：验证重力与阻力合成向量的正确性。
-* `engine.rs`：验证积分算法（如欧拉法）在简单情形下的解析解对齐。
-
-
-* [ ] **参数化配置**：引入 `serde` 与 `toml`，将环境参数（重力、密度）与弹药参数从代码中抽离到 `config.toml`。
-
-### 第二阶段：动力学模型扩展 (P1 - 重要)
-
-* [ ] **高级积分器**：引入辛积分算法（Symplectic Integrators，如 Verlet 或 Runge-Kutta 
-4th），以满足长时间动力学模拟的能量守恒。
-* [ ] **刚体动力学**：
-* 引入四元数（Quaternion）处理姿态解算。
-* 实现转动惯量张量计算与力矩（Torque）模型。
-
-
-* [ ] **多体动力学 (MBD)**：
-* 定义约束（Constraints）与铰链（Joints）。
-* 建立多体系统的拓扑结构表达。
-
-### 第三阶段：Julia 协同与可视化 (P2 - 增强)
-
-* [ ] **Julia 接口层**：
-* 使用 `ccall` 或 `PyO3/inline-python` 风格的绑定，暴露 Rust 核心计算函数给 Julia。
-* 或者通过共享内存/零拷贝序列化（如 Apache Arrow）进行高速数据传递。
-
-
-* [ ] **Makie 可视化**：
-* 编写 Julia 脚本读取 Rust 实时输出的 State 流。
-* 实现基于 Makie 的三维轨迹实时渲染与动态动画演示。
-
-
-* [ ] **复杂外弹道任务**：在 Julia 端调用 Rust 引擎进行蒙特卡洛弹道散布分析。
-
----
-
-## 4. 目录结构
-
-* `src/domain.rs`: 核心数据结构定义（状态、环境、配置）。
-* `src/physics.rs`: 力学模型实现。
-* `src/engine.rs`: 数值积分与状态步进引擎。
-* `src/main.rs`: 模拟主循环与数据落盘。
-* `flake.nix`: Nix Flake 环境配置。
+* [x] **核心框架**：建立质点动力学基础状态方程与步进引擎。
+* [x] **环境配置**：完成 Nix 隔离环境与 Git 仓库初始化。
+* [ ] **错误处理**：引入 `anyhow` 替换现有的 `Box<dyn Error>`。
+* [ ] **物理校验单元测试**：
+* 验证 `physics::total_force` 在真空（空气密度为 0）下的抛物线解析解对齐情况。
+* 验证 `engine::step` 在极端小步长下的收敛性。
 
 
 
+### 第二阶段：模型深化与刚体动力学 (P1 - 物理层扩展)
+
+* [ ] **参数化配置系统**：实现通过外部 TOML 文件加载弹药参数（质量、阻力系数）与环境参数（气压、重力场模型）。
+* [ ] **六自由度 (6-DOF) 扩展**：
+* 将 `State` 扩展至包含角动量与姿态四元数。
+* 实现基于转动惯量张量的力矩解算。
+
+
+* [ ] **高阶积分器**：实现四阶龙格-库塔法 (RK4) 或辛积分算法以降低长程模拟误差。
+
+### 第三阶段：Julia 协同与高级模拟 (P2 - 交互层)
+
+* [ ] **Julia 接口暴露**：通过数据管道或 FFI 允许 Julia 调用 Rust 编写的高性能物理核心。
+* [ ] **Makie 可视化**：编写 Julia 脚本实现实时 3D 弹道轨迹渲染与刚体姿态动画展示。
+* [ ] **多体动力学 (MBD)**：在 Rust 层实现多体约束求解器，支撑复杂机械系统的数值模拟。
+
+## 3. 目录说明
+
+* `src/domain.rs`: 定义 `State`, `Environment`, `ProjectileConfig` 等核心域模型。
+* `src/physics.rs`: 处理重力、空气阻力等物理矢量计算。
+* `src/engine.rs`: 负责状态转移方程与数值步进。
+* `src/main.rs`: 模拟入口，负责主循环与 CSV 数据落盘。
