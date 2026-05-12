@@ -10,23 +10,17 @@
 #### 部署步骤
 1. **克隆仓库**：
    ```bash
-   git clone 
-[https://github.com/LinTrau/simpleballistics.git](https://github.com/LinTrau/
-simpleballistics.git)
+   git clone https://github.com/LinTrau/simpleballistics.git
    cd simpleballistics
-
-```
-
+   ```
 2. **进入环境**：
 * 如果已启用 Flakes：`nix develop`
 * 如果使用传统 Nix：`nix-shell`
 
-
 3. **编译与运行**：
-```bash
-cargo run --release
-
-```
+   ```bash
+   cargo run --release
+   ```
 
 ## 2. 任务路线图 (To-Do List)
 
@@ -39,15 +33,12 @@ cargo run --release
 * 验证 `physics::total_force` 在真空（空气密度为 0）下的抛物线解析解对齐情况。
 * 验证 `engine::step` 在极端小步长下的收敛性。
 
-
-
 ### 第二阶段：模型深化与刚体动力学 (P1 - 物理层扩展)
 
 * [ ] **参数化配置系统**：实现通过外部 TOML 文件加载弹药参数（质量、阻力系数）与环境参数（气压、重力场模型）。
 * [ ] **六自由度 (6-DOF) 扩展**：
 * 将 `State` 扩展至包含角动量与姿态四元数。
 * 实现基于转动惯量张量的力矩解算。
-
 
 * [ ] **高阶积分器**：实现四阶龙格-库塔法 (RK4) 或辛积分算法以降低长程模拟误差。
 
